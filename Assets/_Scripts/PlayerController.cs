@@ -6,13 +6,13 @@ using UnityEngine;
 [RequireComponent(requiredComponent: typeof(Camera))]
 public class PlayerController : MonoBehaviour
 {
+    public static Vector3 cursorPos;
+
     [SerializeField] private float speed;
     [SerializeField] private GameObject reticle;
     [SerializeField] private Camera mainCamera;
 
-
     private Rigidbody2D rb;
-    private Vector3 cursorPos;
 
 	// Use this for initialization
 	void Start ()
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = rb.velocity * Mathf.MoveTowards(rb.velocity.sqrMagnitude,0,rb.velocity.sqrMagnitude / Time.deltaTime);
         }
 
-        float maxSpeed = 6f;
+        float maxSpeed = 15f;
 
         if (rb.velocity.sqrMagnitude > maxSpeed)
         {
