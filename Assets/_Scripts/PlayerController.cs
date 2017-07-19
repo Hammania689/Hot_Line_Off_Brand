@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(requiredComponent: typeof(Camera))]
 public class PlayerController : MonoBehaviour
 {
     public static Vector3 cursorPos;
+    public static GameObject player;
 
-    [SerializeField] private float speed;
-    [SerializeField] private GameObject reticle;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private float speed = 6.5f;
+    [SerializeField] private GameObject reticle;
+    [SerializeField] private GameObject projectile;
 
     private Rigidbody2D rb;
 
@@ -18,12 +19,14 @@ public class PlayerController : MonoBehaviour
 	void Start ()
 	{
 	    rb = GetComponent<Rigidbody2D>();
+	    player = this.gameObject;
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
         MouseToReticle();
+        ShootProjectile();
 	    Movement();
 	}
 
@@ -35,7 +38,7 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
-    // Use to change postition of the Player
+    // Changes postition of the Player
     private void Movement()
     {
         if (Input.GetAxisRaw("Horizontal") != 0)
@@ -56,10 +59,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Use to update the position of the reticle
+    // Updates the position of the reticle
     private void MouseToReticle()
     {
         cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         reticle.transform.position = new Vector2(cursorPos.x, cursorPos.y);
+    }
+
+    // Takes the current position and adds an offset from the normalized magnitude of the Reticle
+    private Vector3 launchPos()
+    {
+        return  (transform.position + (cursorPos.normalized * 3));
+    }
+
+    // On Left Click instantiates and shoots a projectile with normalized vector values of the Reticle
+    private void ShootProjectile()
+    {
+        Rigidbody2D prefab;
+        if (Input.GetMouseButtonDown(0))
+        {
+            prefab = Instantiate(projectile.GetComponent<Rigidbody2D>(),
+                launchPos(), Quaternion.identity,this.transform) as Rigidbody2D;
+            prefab.velocity += new Vector2(cursorPos.x, cursorPos.y).normalized * 15;
+            Destroy(prefab.gameObject, 5);
+        }
     }
 }

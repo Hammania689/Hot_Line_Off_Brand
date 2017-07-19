@@ -6,44 +6,43 @@ using UnityEngine;
 public class HealthAndDamage : MonoBehaviour
 {
 	[SerializeField] private float health = 1;
-	[SerializeField] private float damage = .2f;
+	[SerializeField] private float damage = 1;
 
-	public Weapon weapon;
+	private bool isAnEnemy;
 	
 	// Use this for initialization
 	private void Start ()
 	{
+		isAnEnemy = gameObject.tag == "Enemy";
 		health = 1;
 	}
 
 	// Update is called once per frame
 	private void Update ()
 	{
-		ShootProjectile();
-		if(shouldBeLiving() == false)
-			Destroy(this);
+		if (shouldBeLiving() == false)
+			Destroy(this.gameObject);
 	}
 
+	// Checks to see weither or not this gameObject has health greater than 0
 	public bool shouldBeLiving()
 	{
-		return !(health < 0);
+		return !(health <= 0);
 	}
 
-	public void DealDamage()
+	// Subtracts from total Health by the given Damage Value
+	// Defualt is set to 1
+	public void DealDamage(float damageValue)
 	{
-		damage = weapon.weaponDamage;
+		health -= damageValue;
 	}
 
-	void ShootProjectile()
+	// Controls all the cases of collision events needed to happen when a projectile hits either an Enemy or Player
+	private void OnTriggerEnter2D(Collider2D coll)
 	{
-		Rigidbody2D prefab;
-		if (Input.GetMouseButtonDown(0))
-		{
-			// weapon.projectile = Instantiate(prefab, transform.position, Quaternion.identity,
-			//   weapon.projectileHolder.transform) as GameObject;
-			prefab = Instantiate(weapon.projectile.GetComponent<Rigidbody2D>(),weapon.projectileHolder.transform.position,Quaternion.identity,weapon.projectileHolder.transform) as Rigidbody2D;
-			prefab.velocity += new Vector2(PlayerController.cursorPos.x,PlayerController.cursorPos.y).normalized * 15;
-			Destroy(prefab.gameObject,5);
-		}
+		//  Projectile hits a Bot
+		if (isAnEnemy && coll.gameObject.tag == "Projectile")
+			DealDamage(damage);
+
 	}
 }
