@@ -16,7 +16,6 @@ public class EnemyController : MonoBehaviour
 	{
 		index = Mathf.RoundToInt(Random.Range(0,3));
 		playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
-		Debug.Log(playerTrans.transform.position);
 	}
 	
 	// Update is called once per frame
@@ -26,6 +25,7 @@ public class EnemyController : MonoBehaviour
 	}
 
 	// Returns True if Enemy has yet to arrive to current desTrans
+	// Returns True if Enemy has yet to arrive to current destination
 	private bool isInTransit(int i)
 	{
 		if (transform.position != movementPoints[i].position) return true;
@@ -45,7 +45,6 @@ public class EnemyController : MonoBehaviour
 	// Randomly Iterates through Array of Travel Positions
 	private void Patrol()
 	{
-		print("Current Destination : " + index);
 		if (isPlayerNearby() == false)
 			if (isInTransit(index) == true)
 				this.transform.position = Vector3.MoveTowards(transform.position, movementPoints[index].position,
@@ -54,6 +53,5 @@ public class EnemyController : MonoBehaviour
 				index = Mathf.RoundToInt(Random.Range(0, 3));
 		else
 			this.transform.position = Vector3.MoveTowards(transform.position, playerTrans.position, travelSpeed * Time.deltaTime * 1.4f);
-
 	}
 }

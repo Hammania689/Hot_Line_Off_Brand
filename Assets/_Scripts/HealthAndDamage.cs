@@ -38,11 +38,10 @@ public class HealthAndDamage : MonoBehaviour
 	}
 
 	// Controls all the cases of collision events needed to happen when a projectile hits either an Enemy or Player
-	private void OnTriggerEnter2D(Collider2D coll)
+	private void OnTriggerEnter(Collider coll)
 	{
 		//  Projectile hits a Bot
 		if (isAnEnemy && coll.gameObject.tag == "Projectile")
 			DealDamage(damage);
-
 	}
 }
