@@ -50,7 +50,6 @@ public class NavMeshController : MonoBehaviour
 	// Randomly Iterates through Array of Travel Positions
 	private void Patrol()
 	{
-		Debug.Log("Travelling to point : " + index);
 
 		if(isAtDestination())
 		{
